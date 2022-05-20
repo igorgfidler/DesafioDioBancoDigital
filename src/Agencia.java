@@ -41,4 +41,8 @@ public class Agencia {
   public boolean checarExistenciaConta(@NotNull Conta conta) {
     return contas.get(conta.getNumeroAgencia()) != null;
   }
+
+  public Integer getNumeroAgencia() {
+    return numeroAgencia;
+  }
 }
