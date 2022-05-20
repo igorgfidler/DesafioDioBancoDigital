@@ -32,13 +32,21 @@ public class Conta {
     addExtratoBancario("Deposito realizado com valor de", valorDeposito);
     saldo = saldo.add(valorDeposito);
   }
-  
-  public void realizarTransferencia(@NotNull Conta contaParaTransferir,
-                                    @NotNull BigDecimal valorTransferencia) {
+
+  public Transferencia requisitarTransferencia(@NotNull Conta contaParaTransferir,
+                                               @NotNull BigDecimal valorTransferencia) {
     // TODO: throw error on saldo insuficiente
-    addExtratoBancario("Transferencia", contaParaTransferir, valorTransferencia);
-    saldo = saldo.subtract(valorTransferencia);
-    contaParaTransferir.realizarDeposito(valorTransferencia);
+    return new Transferencia(this, contaParaTransferir, valorTransferencia);
+  }
+
+  public void receberTransferencia(Conta contaOrigem, @NotNull BigDecimal valorRecebido) {
+    saldo = saldo.add(valorRecebido);
+    addExtratoBancario("Transferencia", valorRecebido, contaOrigem);
+  }
+
+  public void debitarTransferencia(Conta contaDestino, BigDecimal valor) {
+    saldo = saldo.subtract(valor);
+    addExtratoBancario("Transferencia", contaDestino, valor);
   }
 
   public void realizarSaque(@NotNull BigDecimal valorSaque) {
@@ -47,18 +55,18 @@ public class Conta {
     saldo = saldo.subtract(valorSaque);
   }
 
-  public void receberPix(BigDecimal valorPix) {
+  public Pix requisitarPix(String chave, BigDecimal valorPix) {
+    // TODO: throw error on saldo insuficiente
+    return new Pix(this, chave, valorPix);
+
+  }
+
+  public void receberPix(Conta contaOrigem, BigDecimal valorPix) {
     saldo = saldo.add(valorPix);
     addExtratoBancario("Pix recebido", valorPix);
   }
 
-  public void enviarPix(@NotNull String chave, BigDecimal valorPix) {
-    //TODO: checar se a chave existe
-    if (chave.isEmpty()) {
-      return;
-    }
-
-    // TODO: throw an error on saldo insuficiente
+  public void enviarPix(Conta contaDestino, @NotNull String chave, BigDecimal valorPix) {
     saldo = saldo.subtract(valorPix);
     addExtratoBancario("Pix enviado", valorPix);
   }
@@ -102,6 +110,19 @@ public class Conta {
     extratoBancario.append("R$\n");
   }
 
+  private void addExtratoBancario(String tipoOperacao, @NotNull BigDecimal valor, @NotNull Conta conta) {
+    extratoBancario.append(tipoOperacao);
+    extratoBancario.append("recebida, no valor de: ");
+    extratoBancario.append(valor);
+    extratoBancario.append("R$.");
+    extratoBancario.append("Conta de origem: ");
+    extratoBancario.append(conta);
+  }
+
+  public void reportarErro(String msg) {
+    System.out.println(msg);
+  }
+
   public Integer getNumeroConta() {
     return numeroConta;
   }
@@ -119,5 +140,15 @@ public class Conta {
     contaAsString.append("Agencia: " + numeroAgencia + " ");
     contaAsString.append("}");
     return new String(contaAsString);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Agencia)) return false;
+
+    Conta conta = (Conta) o;
+
+    return numeroConta == conta.getNumeroConta() && numeroAgencia == conta.getNumeroAgencia();
   }
 }

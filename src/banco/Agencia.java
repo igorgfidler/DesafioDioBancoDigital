@@ -1,3 +1,4 @@
+import conta.Conta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -33,7 +34,7 @@ public class Agencia {
     contas.put(novaConta.getNumeroConta(), novaConta);
   }
 
-  // Conta deve obrigatoriamente existir, função do banco checar isso
+  // conta.Conta deve obrigatoriamente existir, função do banco checar isso
   public void removerConta(@NotNull Conta conta) {
     contas.remove(conta.getNumeroConta());
   }

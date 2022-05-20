@@ -1,4 +1,6 @@
+import conta.Conta;
 import org.jetbrains.annotations.NotNull;
+import transacao.Transacao;
 
 import java.util.*;
 
@@ -6,7 +8,7 @@ public class Banco {
   private static Banco banco;
   // TODO: criar a classe NumeroAgencia
   private final Map<Integer, Agencia> agencias;
-  // TODO: criar uma classe para a chave Pix
+  // TODO: criar uma classe para a chave transacao.Pix
   private final Map<String, Conta> chavePix;
   private final Queue<Transacao> transacoes;
 
