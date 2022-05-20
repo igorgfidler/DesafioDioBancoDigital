@@ -8,8 +8,8 @@ import java.util.Random;
 // TODO: Refatorar as funções para uma interface
 // TODO: Fazer as funções retornarem um objeto para ser executado pelo banco
 public class Conta {
-  private final int numero;
-  private final int agencia;
+  private final Integer numeroConta;
+  private final Integer numeroAgencia;
   private final BigDecimal taxaJuros = BigDecimal.ZERO;
   private final StringBuilder extratoBancario;
   private final Cliente _dono = null;
@@ -22,8 +22,8 @@ public class Conta {
     int parteDecimal = Math.abs(rng.nextInt()) % 100;
     double taxa = (double) parteInteira + (double) parteDecimal;
 
-    numero = rng.nextInt();
-    agencia = rng.nextInt();
+    numeroConta = rng.nextInt();
+    numeroAgencia = rng.nextInt();
     taxaManutecao = new BigDecimal(taxa);
     extratoBancario = new StringBuilder();
   }
@@ -32,7 +32,7 @@ public class Conta {
     addExtratoBancario("Deposito realizado com valor de", valorDeposito);
     saldo = saldo.add(valorDeposito);
   }
-
+  
   public void realizarTransferencia(@NotNull Conta contaParaTransferir,
                                     @NotNull BigDecimal valorTransferencia) {
     // TODO: throw error on saldo insuficiente
@@ -102,12 +102,21 @@ public class Conta {
     extratoBancario.append("R$\n");
   }
 
+  public Integer getNumeroConta() {
+    return numeroConta;
+  }
+
+  public Integer getNumeroAgencia() {
+    return numeroAgencia;
+  }
+
   @Override
   public String toString() {
     StringBuilder contaAsString = new StringBuilder();
     contaAsString.append("Conta { ");
-    contaAsString.append("Numero: " + numero + " ");
-    contaAsString.append("Agencia: " + agencia + " ");
+    contaAsString.append("Numero: " + numeroConta + " ");
+    contaAsString.append("Agencia: " + numeroAgencia + " ");
+    contaAsString.append("Agencia: " + numeroAgencia + " ");
     contaAsString.append("}");
     return new String(contaAsString);
   }
