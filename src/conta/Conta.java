@@ -154,7 +154,6 @@ public class Conta {
     contaAsString.append("conta.Conta { ");
     contaAsString.append("Numero: " + numeroConta + " ");
     contaAsString.append("banco.Agencia: " + numeroAgencia + " ");
-    contaAsString.append("banco.Agencia: " + numeroAgencia + " ");
     contaAsString.append("}");
     return new String(contaAsString);
   }
