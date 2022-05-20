@@ -1,3 +1,5 @@
+package banco;
+
 import conta.Conta;
 import org.jetbrains.annotations.NotNull;
 

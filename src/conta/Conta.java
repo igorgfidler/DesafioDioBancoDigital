@@ -1,40 +1,53 @@
+package conta;
+
+import cliente.Cliente;
 import org.jetbrains.annotations.NotNull;
+import transacao.*;
 
 import java.math.BigDecimal;
-import java.util.Random;
 
 
 // TODO: Faça conta ser uma classe abstrata
 // TODO: Refatorar as funções para uma interface
 // TODO: Fazer as funções retornarem um objeto para ser executado pelo banco
 public class Conta {
+  private static Integer numeroNovaConta = 1;
   private final Integer numeroConta;
   private final Integer numeroAgencia;
   private final BigDecimal taxaJuros = BigDecimal.ZERO;
   private final StringBuilder extratoBancario;
   private final Cliente _dono = null;
-  private final BigDecimal taxaManutecao;
+  private final BigDecimal taxaManutecao = BigDecimal.ZERO;
   private BigDecimal saldo = BigDecimal.ZERO;
 
-  public Conta() {
-    Random rng = new Random();
-    int parteInteira = Math.abs(rng.nextInt()) % 15;
-    int parteDecimal = Math.abs(rng.nextInt()) % 100;
-    double taxa = (double) parteInteira + (double) parteDecimal;
 
-    numeroConta = rng.nextInt();
-    numeroAgencia = rng.nextInt();
-    taxaManutecao = new BigDecimal(taxa);
+  public Conta(Integer numeroAgencia) {
     extratoBancario = new StringBuilder();
+    this.numeroAgencia = numeroAgencia;
+    this.numeroConta = numeroNovaConta++;
   }
 
-  public void realizarDeposito(@NotNull BigDecimal valorDeposito) {
-    addExtratoBancario("Deposito realizado com valor de", valorDeposito);
+  public Conta(Integer numeroAgencia, @NotNull BigDecimal saldoInicial) {
+    this.numeroAgencia = numeroAgencia;
+    this.numeroConta = numeroNovaConta;
+    this.saldo = saldoInicial;
+    extratoBancario = new StringBuilder();
+    extratoBancario.append("Saldo inicial de ");
+    extratoBancario.append(saldoInicial);
+    extratoBancario.append("R$\n");
+  }
+
+  public void receberDeposito(BigDecimal valorDeposito) {
     saldo = saldo.add(valorDeposito);
+    addExtratoBancario("Deposito", valorDeposito);
   }
 
-  public Transferencia requisitarTransferencia(@NotNull Conta contaParaTransferir,
-                                               @NotNull BigDecimal valorTransferencia) {
+  public Transacao requisitarDeposito(@NotNull BigDecimal valorDeposito) {
+    return new Deposito(this, valorDeposito);
+  }
+
+  public Transacao requisitarTransferencia(@NotNull Conta contaParaTransferir,
+                                           @NotNull BigDecimal valorTransferencia) {
     // TODO: throw error on saldo insuficiente
     return new Transferencia(this, contaParaTransferir, valorTransferencia);
   }
@@ -49,13 +62,17 @@ public class Conta {
     addExtratoBancario("Transferencia", contaDestino, valor);
   }
 
-  public void realizarSaque(@NotNull BigDecimal valorSaque) {
+  public Transacao requisitarSaque(@NotNull BigDecimal valorSaque) {
     // TODO: throw error on saldo insuficiente
-    addExtratoBancario("Saque", valorSaque);
-    saldo = saldo.subtract(valorSaque);
+    return new Saque(this, valorSaque);
   }
 
-  public Pix requisitarPix(String chave, BigDecimal valorPix) {
+  public void realizarSaque(@NotNull BigDecimal valorSaque) {
+    saldo = saldo.subtract(valorSaque);
+    addExtratoBancario("Saque", valorSaque);
+  }
+
+  public Transacao requisitarPix(String chave, BigDecimal valorPix) {
     // TODO: throw error on saldo insuficiente
     return new Pix(this, chave, valorPix);
 
@@ -115,7 +132,7 @@ public class Conta {
     extratoBancario.append("recebida, no valor de: ");
     extratoBancario.append(valor);
     extratoBancario.append("R$.");
-    extratoBancario.append("Conta de origem: ");
+    extratoBancario.append("conta.Conta de origem: ");
     extratoBancario.append(conta);
   }
 
@@ -134,10 +151,10 @@ public class Conta {
   @Override
   public String toString() {
     StringBuilder contaAsString = new StringBuilder();
-    contaAsString.append("Conta { ");
+    contaAsString.append("conta.Conta { ");
     contaAsString.append("Numero: " + numeroConta + " ");
-    contaAsString.append("Agencia: " + numeroAgencia + " ");
-    contaAsString.append("Agencia: " + numeroAgencia + " ");
+    contaAsString.append("banco.Agencia: " + numeroAgencia + " ");
+    contaAsString.append("banco.Agencia: " + numeroAgencia + " ");
     contaAsString.append("}");
     return new String(contaAsString);
   }
@@ -145,7 +162,7 @@ public class Conta {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof Agencia)) return false;
+    if (!(o instanceof Conta)) return false;
 
     Conta conta = (Conta) o;
 
