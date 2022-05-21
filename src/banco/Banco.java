@@ -56,18 +56,14 @@ public class Banco {
     chavePix.put(chave, conta);
   }
 
-  public Integer criarNovaAgencia() {
+  public Agencia criarNovaAgencia() {
     Agencia agencia = new Agencia();
     agencias.put(agencia.getNumeroAgencia(), agencia);
-    return agencia.getNumeroAgencia();
+    return agencia;
   }
 
-  public boolean inserirConta(Integer numeroConta, Conta conta) {
-    Agencia a = agencias.get(numeroConta);
-    if (a == null) {
-      return false;
-    }
-    a.inserirConta(conta);
-    return true;
+  public Optional<Agencia> find(Agencia a) {
+    Agencia agencia = agencias.get(a.getNumeroAgencia());
+    return Optional.of(agencia);
   }
 }

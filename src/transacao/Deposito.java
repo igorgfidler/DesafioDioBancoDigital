@@ -1,11 +1,13 @@
 package transacao;
 
+import banco.Banco;
 import conta.Conta;
 
 import java.math.BigDecimal;
 
-public class Deposito extends Transacao {
-
+public class Deposito implements Transacao {
+  Conta contaOrigem;
+  BigDecimal valor;
   public Deposito(Conta contaOrigem, BigDecimal valor) {
     this.contaOrigem = contaOrigem;
     this.valor = valor;
@@ -14,19 +16,16 @@ public class Deposito extends Transacao {
   @Override
   public void executar() {
     if (valor.compareTo(BigDecimal.ZERO) < 0) {
-      emFalha();
+      contaOrigem.reportarErro("valor deve ser maior que zero");
     } else {
-      emSucesso();
+      contaOrigem.receberDeposito(valor);
     }
   }
 
   @Override
-  protected void emFalha() {
-    contaOrigem.reportarErro("O valor de depósito não pode ser negativo");
+  public void notificar() {
+    Banco banco = Banco.getInstance();
+    banco.adicionarTransacao(this);
   }
 
-  @Override
-  protected void emSucesso() {
-    this.contaOrigem.receberDeposito(valor);
-  }
 }

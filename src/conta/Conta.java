@@ -8,9 +8,7 @@ import java.math.BigDecimal;
 
 
 // TODO: Faça conta ser uma classe abstrata
-// TODO: Refatorar as funções para uma interface
-// TODO: Fazer as funções retornarem um objeto para ser executado pelo banco
-public class Conta {
+public class Conta implements RequisicaoTransacao{
   private static Integer numeroNovaConta = 1;
   private final Integer numeroConta;
   private final Integer numeroAgencia;
@@ -29,7 +27,7 @@ public class Conta {
 
   public Conta(Integer numeroAgencia, @NotNull BigDecimal saldoInicial) {
     this.numeroAgencia = numeroAgencia;
-    this.numeroConta = numeroNovaConta;
+    this.numeroConta = numeroNovaConta++;
     this.saldo = saldoInicial;
     extratoBancario = new StringBuilder();
     extratoBancario.append("Saldo inicial de ");
@@ -42,14 +40,16 @@ public class Conta {
     addExtratoBancario("Deposito", valorDeposito);
   }
 
-  public Transacao requisitarDeposito(@NotNull BigDecimal valorDeposito) {
-    return new Deposito(this, valorDeposito);
+  @Override
+  public void requisitarDeposito(@NotNull BigDecimal valorDeposito) {
+    new Deposito(this, valorDeposito).notificar();
   }
 
-  public Transacao requisitarTransferencia(@NotNull Conta contaParaTransferir,
+  @Override
+  public void requisitarTransferencia(@NotNull Conta contaParaTransferir,
                                            @NotNull BigDecimal valorTransferencia) {
     // TODO: throw error on saldo insuficiente
-    return new Transferencia(this, contaParaTransferir, valorTransferencia);
+    new Transferencia(this, contaParaTransferir, valorTransferencia).notificar();
   }
 
   public void receberTransferencia(Conta contaOrigem, @NotNull BigDecimal valorRecebido) {
@@ -62,9 +62,10 @@ public class Conta {
     addExtratoBancario("Transferencia", contaDestino, valor);
   }
 
-  public Transacao requisitarSaque(@NotNull BigDecimal valorSaque) {
+  @Override
+  public void requisitarSaque(@NotNull BigDecimal valorSaque) {
     // TODO: throw error on saldo insuficiente
-    return new Saque(this, valorSaque);
+    new Saque(this, valorSaque).notificar();
   }
 
   public void realizarSaque(@NotNull BigDecimal valorSaque) {
@@ -72,9 +73,10 @@ public class Conta {
     addExtratoBancario("Saque", valorSaque);
   }
 
-  public Transacao requisitarPix(String chave, BigDecimal valorPix) {
+  @Override
+  public void requisitarPix(@NotNull String chave, @NotNull BigDecimal valorPix) {
     // TODO: throw error on saldo insuficiente
-    return new Pix(this, chave, valorPix);
+    new Pix(this, chave, valorPix).notificar();
 
   }
 
@@ -83,7 +85,7 @@ public class Conta {
     addExtratoBancario("Pix recebido", valorPix);
   }
 
-  public void enviarPix(Conta contaDestino, @NotNull String chave, BigDecimal valorPix) {
+  public void enviarPix(Conta contaDestino,  BigDecimal valorPix) {
     saldo = saldo.subtract(valorPix);
     addExtratoBancario("Pix enviado", valorPix);
   }
@@ -161,10 +163,8 @@ public class Conta {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof Conta)) return false;
+    if (!(o instanceof Conta conta)) return false;
 
-    Conta conta = (Conta) o;
-
-    return numeroConta == conta.getNumeroConta() && numeroAgencia == conta.getNumeroAgencia();
+    return numeroConta.equals(conta.getNumeroConta()) && numeroAgencia.equals(conta.getNumeroAgencia());
   }
 }

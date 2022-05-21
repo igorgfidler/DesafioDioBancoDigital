@@ -1,12 +1,13 @@
 package transacao;
 
+import banco.Banco;
 import conta.Conta;
 
 import java.math.BigDecimal;
 
-public class Saque extends Transacao {
-
-
+public class Saque implements Transacao {
+  Conta contaOrigem;
+  BigDecimal valor;
   public Saque(Conta contaOrigem, BigDecimal valor) {
     this.contaOrigem = contaOrigem;
     this.valor = valor;
@@ -14,20 +15,12 @@ public class Saque extends Transacao {
 
   @Override
   public void executar() {
-    if (valor.compareTo(BigDecimal.ZERO) < 0) {
-      emFalha();
-    } else {
-      emSucesso();
-    }
-  }
-
-  @Override
-  protected void emFalha() {
-    contaOrigem.reportarErro("O valor de saque não pode ser negativo");
-  }
-
-  @Override
-  protected void emSucesso() {
+    // TODO throw error em saldo insuficiente
     contaOrigem.realizarSaque(valor);
+  }
+  @Override
+  public void notificar() {
+    Banco banco = Banco.getInstance();
+    banco.adicionarTransacao(this);
   }
 }

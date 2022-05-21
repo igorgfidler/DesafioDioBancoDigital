@@ -3,6 +3,7 @@ package banco;
 import conta.Conta;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -25,22 +26,30 @@ public class Agencia {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof Agencia)) return false;
+    if (!(o instanceof Agencia agencia)) return false;
 
-    Agencia agencia = (Agencia) o;
-
-    return numeroAgencia == agencia.numeroAgencia;
+    return numeroAgencia.equals(agencia.numeroAgencia);
   }
 
   public void inserirConta(@NotNull Conta novaConta) {
     contas.put(novaConta.getNumeroConta(), novaConta);
   }
 
-  // conta.Conta deve obrigatoriamente existir, função do banco checar isso
   public void removerConta(@NotNull Conta conta) {
     contas.remove(conta.getNumeroConta());
   }
 
+  public Conta criarConta() {
+    Conta c = new Conta(numeroAgencia);
+    contas.put(c.getNumeroConta(), c);
+    return c;
+  }
+
+  public Conta criarConta(@NotNull BigDecimal saldoInicial) {
+    Conta c = new Conta(numeroAgencia, saldoInicial);
+    contas.put(c.getNumeroConta(), c);
+    return c;
+  }
   public boolean checarExistenciaConta(@NotNull Conta conta) {
     return contas.get(conta.getNumeroAgencia()) != null;
   }

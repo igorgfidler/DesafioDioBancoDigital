@@ -1,3 +1,4 @@
+import banco.Agencia;
 import banco.Banco;
 import conta.Conta;
 
@@ -13,22 +14,23 @@ public class Main {
     logger.info("Criando o banco");
     Banco banco = Banco.getInstance();
 
-    Integer numeroAgencia = banco.criarNovaAgencia();
-    logger.info("Criando uma nova agencia com numero: " + numeroAgencia);
+    Agencia agencia = banco.criarNovaAgencia();
+    logger.info("Criando uma nova agencia com numero: " + agencia.getNumeroAgencia());
 
     logger.info("Criando conta primaria com saldo de 1000 e secundaria sem saldo");
-    Conta contaPrimaria = new Conta(numeroAgencia, new BigDecimal(1000));
-    Conta contaSecundaria = new Conta(numeroAgencia);
+    Conta contaPrimaria = agencia.criarConta(new BigDecimal(1000));
+    Conta contaSecundaria = agencia.criarConta();
 
-    banco.inserirConta(numeroAgencia, contaPrimaria);
-    banco.inserirConta(numeroAgencia, contaSecundaria);
 
-    banco.adicionarTransacao(contaPrimaria.requisitarDeposito(new BigDecimal(1000)));
-    banco.adicionarTransacao(contaPrimaria.requisitarSaque(new BigDecimal(500)));
+    contaPrimaria.requisitarDeposito(new BigDecimal(1000));
+    contaPrimaria.requisitarSaque(new BigDecimal(500));
 
-    banco.adicionarTransacao(contaPrimaria.requisitarTransferencia(contaSecundaria, new BigDecimal(100)));
+    contaPrimaria.requisitarTransferencia(contaSecundaria, new BigDecimal(100));
 
     banco.executarTransacoes();
+
+    agencia.removerConta(contaPrimaria);
+    agencia.removerConta(contaSecundaria);
 
     logger.info(contaPrimaria.getExtratoBancario());
     logger.info(contaSecundaria.getExtratoBancario());

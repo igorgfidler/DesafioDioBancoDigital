@@ -6,8 +6,11 @@ import conta.Conta;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-public class Pix extends Transacao {
-
+public class Pix implements Transacao {
+  Conta contaOrigem;
+  Conta contaDestino;
+  String chavePix;
+  BigDecimal valor;
   public Pix(Conta contaOrigem, String chave, BigDecimal valor) {
     this.contaOrigem = contaOrigem;
     this.chavePix = chave;
@@ -20,21 +23,17 @@ public class Pix extends Transacao {
     Banco banco = Banco.getInstance();
     Optional<Conta> possivelConta = banco.getContaPix(chavePix);
     if (possivelConta.isEmpty()) {
-      emFalha();
+      contaOrigem.reportarErro("conta não existente");
     } else {
       contaDestino = possivelConta.get();
-      emSucesso();
+      contaDestino.receberPix(contaOrigem, valor);
+      contaOrigem.enviarPix(contaDestino, valor);
     }
   }
 
   @Override
-  protected void emFalha() {
-    contaOrigem.reportarErro("A chave não existe");
-  }
-
-  @Override
-  protected void emSucesso() {
-    contaOrigem.enviarPix(contaDestino, chavePix, valor);
-    contaDestino.receberPix(contaOrigem, valor);
+  public void notificar() {
+    Banco banco = Banco.getInstance();
+    banco.adicionarTransacao(this);
   }
 }
