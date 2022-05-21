@@ -52,6 +52,10 @@ public class Banco {
   }
 
   public void inserirChavePix(@NotNull String chave, @NotNull Conta conta) {
+    if (conta.recebePix()) {
+      conta.reportarErro(new Exception("A conta " + conta + "não gerar uma chave Pix"));
+      return;
+    }
     conta.setChavePix(chave);
     chavePix.put(chave, conta);
   }
