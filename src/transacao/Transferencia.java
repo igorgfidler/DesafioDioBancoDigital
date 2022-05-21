@@ -18,8 +18,26 @@ public class Transferencia implements Transacao {
 
   @Override
   public void executar() {
-    contaOrigem.debitarTransferencia(contaDestino, valor);
-    contaDestino.receberTransferencia(contaOrigem, valor);
+    TransacaoValor transacao = new TransacaoValor("Transferência", valor);
+
+    if (valor.compareTo(BigDecimal.ZERO) < 0) {
+      contaOrigem.reportarErro(new Exception("O valor de transferência não pode ser negativo"));
+      return;
+    }
+
+    if(contaOrigem.getSaldo().compareTo(valor) < 0 ) {
+      contaOrigem.reportarErro(new Exception("Saldo insuficiente para a transferência!"));
+      return;
+    }
+
+    Banco banco = Banco.getInstance();
+    if(!banco.contaValida(contaDestino)){
+      contaOrigem.reportarErro(new Exception("A conta de destino informada não existe!"));
+      return;
+    }
+
+    contaOrigem.debitarTransacao(contaDestino, transacao);
+    contaDestino.receberTransacao(contaOrigem, transacao);
   }
 
   @Override

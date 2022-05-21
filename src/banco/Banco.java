@@ -8,9 +8,7 @@ import java.util.*;
 
 public class Banco {
   private static Banco banco;
-  // TODO: criar a classe NumeroAgencia
   private final Map<Integer, Agencia> agencias;
-  // TODO: criar uma classe para a chave transacao.Pix
   private final Map<String, Conta> chavePix;
   private final Queue<Transacao> transacoes;
 
@@ -31,6 +29,7 @@ public class Banco {
     for (Transacao t : transacoes) {
       t.executar();
     }
+    transacoes.clear();
   }
 
   public void adicionarTransacao(Transacao t) {
@@ -53,6 +52,7 @@ public class Banco {
   }
 
   public void inserirChavePix(@NotNull String chave, @NotNull Conta conta) {
+    conta.setChavePix(chave);
     chavePix.put(chave, conta);
   }
 
@@ -62,8 +62,7 @@ public class Banco {
     return agencia;
   }
 
-  public Optional<Agencia> find(Agencia a) {
-    Agencia agencia = agencias.get(a.getNumeroAgencia());
-    return Optional.of(agencia);
+  public boolean existeChavePix(String chave) {
+    return chavePix.containsKey(chave);
   }
 }

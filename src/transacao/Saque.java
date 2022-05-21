@@ -15,8 +15,13 @@ public class Saque implements Transacao {
 
   @Override
   public void executar() {
-    // TODO throw error em saldo insuficiente
-    contaOrigem.realizarSaque(valor);
+    if(contaOrigem.getSaldo().compareTo(valor) < 0 ) {
+      contaOrigem.reportarErro(new Exception("Saldo insuficiente para o saque!"));
+    }
+    else {
+      TransacaoValor transacao = new TransacaoValor("Saque", valor);
+      contaOrigem.debitarTransacao(transacao);
+    }
   }
   @Override
   public void notificar() {

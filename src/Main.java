@@ -11,30 +11,42 @@ public class Main {
     LogManager logm = LogManager.getLogManager();
     Logger logger = logm.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-    logger.info("Criando o banco");
     Banco banco = Banco.getInstance();
 
     Agencia agencia = banco.criarNovaAgencia();
-    logger.info("Criando uma nova agencia com numero: " + agencia.getNumeroAgencia());
-
-    logger.info("Criando conta primaria com saldo de 1000 e secundaria sem saldo");
     Conta contaPrimaria = agencia.criarConta(new BigDecimal(1000));
+    banco.inserirChavePix("chave", contaPrimaria);
     Conta contaSecundaria = agencia.criarConta();
+    banco.inserirChavePix("chave2", contaSecundaria);
 
 
     contaPrimaria.requisitarDeposito(new BigDecimal(1000));
     contaPrimaria.requisitarSaque(new BigDecimal(500));
 
     contaPrimaria.requisitarTransferencia(contaSecundaria, new BigDecimal(100));
-
+    contaPrimaria.requisitarPix("chave2", new BigDecimal(100));
     banco.executarTransacoes();
 
-    agencia.removerConta(contaPrimaria);
-    agencia.removerConta(contaSecundaria);
+    System.out.println("-----------Extrato bancario da conta primaria---------");
+    System.out.println(contaPrimaria.getExtratoBancario());
+    System.out.println("-----------Extrato bancário da conta secundária-------");
+    System.out.println(contaSecundaria.getExtratoBancario());
 
-    logger.info(contaPrimaria.getExtratoBancario());
-    logger.info(contaSecundaria.getExtratoBancario());
+    contaPrimaria.requisitarSaque(new BigDecimal(100000));
 
+    contaPrimaria.requisitarTransferencia(contaSecundaria, new BigDecimal(1000000));
+    contaPrimaria.requisitarTransferencia(contaSecundaria, new BigDecimal( -5));
+    Conta cfake = new Conta(123123);
+    contaPrimaria.requisitarTransferencia(cfake, new BigDecimal(10));
 
+    contaPrimaria.requisitarPix("chave2", new BigDecimal(-1));
+    contaPrimaria.requisitarPix("chave2", new BigDecimal(100000));
+    contaPrimaria.requisitarPix("chave323232", new BigDecimal(10));
+
+    banco.executarTransacoes();
+    System.out.println("-----------Extrato bancario da conta primaria---------");
+    System.out.println(contaPrimaria.getExtratoBancario());
+    System.out.println("-----------Extrato bancário da conta secundária-------");
+    System.out.println(contaSecundaria.getExtratoBancario());
   }
 }
