@@ -1,7 +1,11 @@
 # Criando um Banco Digital com Java e Orientação a Objetos
 
 Este repositório contém todo o código relevante para o desafio de projeto do 
-Módulo IV - Java Essencial do bootcamp GFT Start #5 Java.
+Módulo IV — Java Essencial do bootcamp GFT Start #5 Java.
+
+Para executar o projeto basta rodar ``Main.main()``, isto irá mostrar uma
+série de interassões entre os diferentes ``Contas`` e os erros
+que podem ocorrer, como uma ``Conta`` não suportar uma ``transação`` específica.
 
 ## Arquitetura do Projeto
 
@@ -15,60 +19,59 @@ O ``Banco`` é um ``Singleton`` uma vez que neste sistema não há sentido a exi
 de multiplos bancos, pode-se pensar no ``Banco`` como uma espécie de Banco Central.
 
 O ``Banco`` é responsável por garantir a existência de todas as Agências, Contas, executar
-as transações que foram requisitadas. Ele contém métodos auxiliares como
+as transações requisitadas. Ele contém métodos auxiliares como
 verificar a existência de uma ``Conta``, a quem uma chave PIX pertence entre outros
 similares.
 
 A função principal do banco é descrita pela função ``executarTransacoes`` 
-que executa todas as transações que foram requisitadas até o momento.
+que executa todas as transações requisitadas até o momento.
 
 ### Agência
 A ``Agência`` é uma abstração que representa cada sede do ``Banco`` modelado. 
 A ``Agência`` atua principalmente como uma ``Factory`` de ``Contas``, ou seja,
-sua função principal é manter novas ``Contas``.
+a sua função principal é manter novas ``Contas``.
 
 ### Conta
 A ``Conta`` é a abstração que mantém todas as informações relacionadas a uma 
 conta de banco. A ``Conta`` é responsável por criar as ``Transações`` que
 serão executadas, e reportar mensagens de erro ao usuário caso a especialização
-da ``Conta`` não suporte algum tipo de operação
+da ``Conta`` não suporte alguma operação
 
 O sistema contém três especializações de ``Conta`` sendo elas: `ContaCorrente`, 
-`ContaPoupança` e `ContaSalário`. Para criar uma nova especialização basta
+`ContaPoupança` e `ContaSalário`. Para criar uma especialização basta
 extender a ``classe abstrata Conta`` e atualizar os métodos referentes
 a ``interface RequisicaoTransacao``.
 
-Cada transação possível nas ``Contas`` atua utilizando
+Cada transação possível nas ``Contas`` atua a utilizar
 o padrão de projeto ``Comando`` que é eventualmente
 executado pelo ``Banco``.
 
 Cada ``Conta`` suporta a requisição do extrato bancário,
-neste caso simplificado e mostrando todas as transações que 
-foram realizadas até o momento.
+neste caso simplificado e mostrando todas as transações realizadas até o momento.
 
 A ``interface EfetuarTransacao`` é um modo de reduzir
-um conjunto de métodos similiares para cada nova transação. Esta interface
+um conjunto de métodos similiares para cada nova transação. Esta ‘interface’
 suporta três operações ``debitarTransação`` que decresce o saldo da conta após
 a operação, ``receberTransação`` que incrementa o saldo da conta após a transação e 
 ``reportarErro`` que tem a função de mostrar algum erro que ocorreu durante
 a execução da ``Transação``.
 
 Cada ``Conta`` possui a capacidade de calcular a própria taxa de manutenção
-e calcular juros sobre o dinheiro que elas armazenam. Esse dois paramêtros
+e calcular juros sobre o dinheiro que elas armazenam. Esses dois paramêtros
 ficam fixos para cada especialização de ``Conta``.
 
 ### Transações
 As transações representam todas as operações
 que as ``Contas podem realizar no sistema``.
-Cada transação atua notificando o banco de sua
-existência, ou seja, cada ``Transação`` se auto insere
+Cada transação atua a notificar o banco da sua
+existência, ou seja, cada ``Transação`` se autoinsere
 na lista de execução do ``Banco``.
 
 Os métodos suportados pela ``Transação`` são `notificar` que faz
 com que a `Transação` possa ser observada pelo banco e `executar`
 que é utilizada quando a `Transação` vai ser executada pelo `Banco`.
 
-Para adicionar um novo tipo de ``Transação`` no sistema
+Para adicionar uma nova  ``Transação`` no sistema
 basta inserir a nova operação em ``conta/RequisicaoTransacao``
 e então implementar a classe relevante em ``transacao/``.
 
@@ -79,6 +82,6 @@ apenas o seu nome é utilizado para identificação da ``Conta``
 no extrato bancário.
 
 Não ocorreu a necessidade de separação de `Cliente Físico` 
-e ``Cliente Jurídico``, uma vez que este sistema focou nas relações 
+e ``Cliente Jurídico``, visto que este sistema focou nas relações 
 de trocas entre as contas.
 
