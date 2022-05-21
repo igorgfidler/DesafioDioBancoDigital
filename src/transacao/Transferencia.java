@@ -30,6 +30,11 @@ public class Transferencia implements Transacao {
       return;
     }
 
+    if(!contaDestino.recebeTransferencia()) {
+      contaOrigem.reportarErro(new Exception("A conta " + contaDestino + " não pode receber transferências"));
+      return;
+    }
+
     Banco banco = Banco.getInstance();
     if(!banco.contaValida(contaDestino)){
       contaOrigem.reportarErro(new Exception("A conta de destino informada não existe!"));

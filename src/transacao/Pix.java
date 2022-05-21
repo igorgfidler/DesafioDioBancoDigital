@@ -42,6 +42,12 @@ public class Pix implements Transacao {
     }
 
     contaDestino = possivelConta.get();
+
+    if(contaDestino.recebePix()) {
+      contaOrigem.reportarErro(new Exception("A conta de destino não aceita o serviço PIX!"));
+      return;
+    }
+
     TransacaoValor transacao = new TransacaoValor("PIX", valor);
     contaDestino.receberTransacao(contaOrigem, transacao);
     contaOrigem.debitarTransacao(contaDestino, transacao);

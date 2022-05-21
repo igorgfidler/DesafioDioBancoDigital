@@ -17,10 +17,14 @@ public class Deposito implements Transacao {
   public void executar() {
     if (valor.compareTo(BigDecimal.ZERO) < 0) {
       contaOrigem.reportarErro(new Exception("O valor de depósito deve ser maior que zero!"));
-    } else {
-      TransacaoValor transacao = new TransacaoValor("Depósito", valor);
-      contaOrigem.receberTransacao(transacao);
+      return;
     }
+    if (!contaOrigem.recebeDeposito()) {
+      contaOrigem.reportarErro(new Exception("A conta não pode receber depósitos!"));
+      return;
+    }
+    TransacaoValor transacao = new TransacaoValor("Depósito", valor);
+    contaOrigem.receberTransacao(transacao);
   }
 
   @Override

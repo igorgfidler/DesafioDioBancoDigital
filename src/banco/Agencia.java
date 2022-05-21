@@ -1,14 +1,15 @@
 package banco;
 
-import conta.Conta;
+import conta.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
-public class Agencia {
+public class Agencia implements ContaFactory{
   private static Integer numeroNovaAgencia = 1;
   private final Integer numeroAgencia;
   private final Map<Integer, Conta> contas;
@@ -39,22 +40,61 @@ public class Agencia {
     contas.remove(conta.getNumeroConta());
   }
 
-  public Conta criarConta() {
-    Conta c = new Conta(numeroAgencia);
-    contas.put(c.getNumeroConta(), c);
-    return c;
+  public Optional<Conta> encontrarConta(@NotNull Integer numeroConta) {
+    return Optional.of(contas.get(numeroConta));
   }
 
-  public Conta criarConta(@NotNull BigDecimal saldoInicial) {
-    Conta c = new Conta(numeroAgencia, saldoInicial);
-    contas.put(c.getNumeroConta(), c);
-    return c;
-  }
+
   public boolean checarExistenciaConta(@NotNull Conta conta) {
     return contas.get(conta.getNumeroAgencia()) != null;
   }
 
   public Integer getNumeroAgencia() {
     return numeroAgencia;
+  }
+
+  @Override
+  public Conta criarContaCorrente(@NotNull String donoConta) {
+    Conta c =  new ContaCorrente(donoConta, numeroAgencia);
+    contas.put(numeroAgencia, c);
+    return c;
+  }
+
+  @Override
+  public Conta criarContaCorrente(@NotNull String donoConta,
+                                  @NotNull BigDecimal saldoInicial) {
+    Conta c =  new ContaCorrente(donoConta, numeroAgencia, saldoInicial);
+    contas.put(numeroAgencia, c);
+    return c;
+  }
+
+  @Override
+  public Conta criarContaPoupanca(@NotNull String donoConta) {
+    Conta c =  new ContaPoupanca(donoConta, numeroAgencia);
+    contas.put(numeroAgencia, c);
+    return c;
+  }
+
+  @Override
+  public Conta criarContaPoupanca(@NotNull String donoConta,
+                                  @NotNull BigDecimal saldoInicial) {
+    Conta c =  new ContaPoupanca(donoConta,numeroAgencia,saldoInicial);
+    contas.put(numeroAgencia, c);
+    return c;
+  }
+
+  @Override
+  public Conta criarContaSalario(@NotNull String donoConta) {
+    Conta c =  new ContaSalario(donoConta, numeroAgencia);
+    contas.put(numeroAgencia, c);
+    return c;
+  }
+
+  @Override
+  public Conta criarContaSalario(@NotNull String donoConta,
+                                 @NotNull BigDecimal saldoInicial) {
+    Conta c =  new ContaSalario(donoConta,numeroAgencia,saldoInicial);
+    contas.put(numeroAgencia, c);
+    return c;
   }
 }
