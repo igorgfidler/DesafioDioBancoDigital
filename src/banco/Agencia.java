@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 public class Agencia implements ContaFactory{
   private static Integer numeroNovaAgencia = 1;
@@ -38,10 +37,6 @@ public class Agencia implements ContaFactory{
 
   public void removerConta(@NotNull Conta conta) {
     contas.remove(conta.getNumeroConta());
-  }
-
-  public Optional<Conta> encontrarConta(@NotNull Integer numeroConta) {
-    return Optional.of(contas.get(numeroConta));
   }
 
 
